@@ -2,48 +2,49 @@ create database jdbc-webapp;
 
 use jdbc-webapp;
 
-CREATE TABLE `course_enrollments` (
-    `studentId` int DEFAULT NULL,
-    `courseId` int DEFAULT NULL,
-    UNIQUE KEY `studentId` (`studentId`,`courseId`),
-    KEY `courseId` (`courseId`),
-    CONSTRAINT `course_enrollments_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `students` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `course_enrollments_ibfk_2` FOREIGN KEY (`courseId`) REFERENCES `courses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+create table people
+(
+    id int not null auto_increment,
+    name varchar(50),
+    surname varchar(50),
+    age int,
+    primary key (id)
+);
 
-CREATE TABLE `courses` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `course_name` varchar(50) DEFAULT NULL,
-    `professorId` int DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `professorId` (`professorId`),
-    CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`professorId`) REFERENCES `professors` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+create table professors
+(
+    id int not null auto_increment,
+    subject  varchar(50),
+    assumption_year year,
+    personId int,
+    primary key (id),
+    foreign key (personId) references people (id)
+);
 
-CREATE TABLE `people` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) DEFAULT NULL,
-    `surname` varchar(50) DEFAULT NULL,
-    `age` int DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+create table students
+(
+    id int not null auto_increment,
+    year_of_study int,
+    enrollment_year year,
+    personId int,
+    primary key (id),
+    foreign key (personId) references people (id)
+);
 
-CREATE TABLE `professors` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `subject` varchar(50) DEFAULT NULL,
-    `assumption_year` year DEFAULT NULL,
-    `personId` int DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `personId` (`personId`),
-    CONSTRAINT `professors_ibfk_1` FOREIGN KEY (`personId`) REFERENCES `people` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+create table courses
+(
+    id int not null auto_increment,
+    course_name varchar(50),
+    professorId int,
+    primary key (id),
+    foreign key (professorId) references professors (id)
+);
 
-CREATE TABLE `students` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `year_of_study` int DEFAULT NULL,
-    `enrollment_year` year DEFAULT NULL,
-    `personId` int DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `personId` (`personId`),
-    CONSTRAINT `students_ibfk_1` FOREIGN KEY (`personId`) REFERENCES `people` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+create table course_enrollments
+(
+    studentId int not null,
+    courseId  int not null,
+    primary key (studentId, courseId),
+    foreign key (studentId) references students (id) on delete cascade,
+    foreign key (courseId) references courses (id) on delete cascade
+);
