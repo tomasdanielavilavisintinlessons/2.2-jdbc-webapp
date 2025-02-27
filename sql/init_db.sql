@@ -1,6 +1,6 @@
-create database jdbc-webapp;
+create database jdbcwebapp;
 
-use jdbc-webapp;
+use jdbcwebapp;
 
 create table people
 (
